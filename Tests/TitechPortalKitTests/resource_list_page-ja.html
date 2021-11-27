@@ -1,0 +1,492 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,user-scalable=yes">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>
+      TokyoTech Portal リソース メニュー
+    </title>
+    <base target="_blank" />
+    <style type="text/css">
+      <!--
+        img.banner {
+          max-width: 100%;
+          height: auto;
+        }
+        a:hover {
+          color: #ff0000;
+        }
+        table.category {
+          border-collapse: separate;
+          border-spacing: 0px
+        }
+        td.resource {
+          padding: 0px 0px 0px 0px;
+        }
+        table.simple {
+          margin: 0px 0px 0px 0px;
+        }
+        @media screen and (min-width: 700px) {
+          table.simple tr td {
+            margin: 0px;
+            padding: 0px 2px;
+          }
+        }
+        @media screen and (max-width: 699px) {
+          table.simple tr td {
+            margin: 0px;
+            padding: 5px 2px;
+          }
+        }
+
+        ul {
+          list-style-type: none;
+        }
+        
+
+        #DynamicMenu {
+          list-style-type: none;
+          position: fixed;
+          z-index: 1;
+
+          max-height: 95%;
+/*        max-width: 95%;  */
+          overflow: hidden;
+          white-space: nowrap;
+          -webkit-overflow-scrolling: touch;
+
+          margin: 0;
+          padding: 0px 20px 0px 10px;
+          border: solid 3px #6091d3;
+          border-radius: 10px;
+          background: #FFF;
+        }
+
+        #DynamicMenu:hover {
+          overflow: auto;
+        }
+
+        .Item {
+          cursor: pointer;
+          user-select: none; /* Prevent text selection */
+          position: static;
+        }
+
+        .Item::before {
+          content: "\25B6";
+          color: black;
+          display: inline-block;
+          margin-right: 6px;
+        }
+
+        .Item-Down::before {
+          transform: rotate(90deg);
+        }
+
+        .Nested {
+          display: none;
+        }
+
+        ul.Nested > li {
+          margin-left: 30px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 0px;
+        }
+
+        ul.Nested > li > ul.Nested > li {
+          margin-left: 10px;
+          margin-top: 5px;
+          margin-bottom: 5px;
+          margin-right: 30px;
+        }
+
+        .Item-Appear {
+          display: block;
+          position: static;
+        }
+
+        .Item > img {
+          height: 20px;
+          vertical-align: middle;
+          padding-left: 0px;
+          padding-top: 0px;
+          padding-bottom: 0px;
+          padding-right: 5px;
+        }
+
+        .Nested > li > img {
+          height: 20px;
+          vertical-align: middle;
+          padding-left: 0px;
+          padding-top: 0px;
+          padding-bottom: 0px;
+          padding-right: 5px;
+        }
+
+        .Nested > li.Explain {
+          font-size: 12px;
+          padding-top: 30px;
+        }
+
+      -->
+    </style>
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+
+        <ul id="DynamicMenu">
+        <li><span class="Item">dynamic menu</span>
+          <ul class="Nested">
+  
+
+              <li><span class="Item"><img src="/GetAccess/images/default.gif">教務系サービス</span>
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://kyomu2.gakumu.titech.ac.jp:443/Titech/Default.aspx" rel="noopener noreferrer">教務Webシステム（Web system for S&F）</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://t2schola.titech.ac.jp:443/auth/eltitech/autologin.php" rel="noopener noreferrer">T2SCHOLA</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://secure.ocw.titech.ac.jp:443/ocwi/index.php" rel="noopener noreferrer">TOKYO TECH OCW-i</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://portfolio.gakumu.titech.ac.jp:443/" rel="noopener noreferrer">東工大学修ポートフォリオ（TokyoTechPortfolio）</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://kenshinweb.gakumu.titech.ac.jp:443/kenshinwebmypage/jsp/dantai/userlogin.jsp" rel="noopener noreferrer">学生一般定期健康診断　予約・問診</a></li>
+                </ul>
+            </li>
+
+              <li><span class="Item"><img src="/GetAccess/images/default.gif">メール関連サービス</span>
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://mailv3.m.titech.ac.jp:443/cgi-bin/loginweb" rel="noopener noreferrer">Tokyo Tech Mail</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/mailauthid/" rel="noopener noreferrer">共通メール認証ID</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/DeepMail/cgi-bin/sso.cgi" rel="noopener noreferrer">Mailing List</a></li>
+                </ul>
+            </li>
+
+                  <li><span class="Item"><img src="/GetAccess/images/default.gif">各種情報サービス</span>
+    
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://vlmgr-02.edu2019.gsic.titech.ac.jp:443/idm/upc/" rel="noopener noreferrer">教育用電子計算機システム：[学内専用]</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://portal.t3.gsic.titech.ac.jp:443/ptl/ga/sso/" rel="noopener noreferrer">TSUBAME ポータル</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://t2report.rpd.titech.ac.jp:443/auth/getaccess" rel="noopener noreferrer">T2Report</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://request.libra.titech.ac.jp:443/portal/user.php?plang=jpn" rel="noopener noreferrer">図書館サービス：Library Service</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://lsci.rpd.titech.ac.jp:443/TokyoTech/login_portal.aspx" rel="noopener noreferrer">人を対象とする研究倫理審査申請：[学内専用]</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://apm.nap.gsic.titech.ac.jp:443/" rel="noopener noreferrer">学内ネットワークアクセス（SSL-VPN）</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://t2r2-inside.star.titech.ac.jp:443/t2r2/login.do" rel="noopener noreferrer">東工大リサーチリポジトリ（T2R2）</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://search-inside.star.titech.ac.jp:443/index.act" rel="noopener noreferrer">東工大STARサーチ（STAR Search）</a></li>
+                </ul>
+            </li>
+
+              <li><span class="Item"><img src="/GetAccess/images/default.gif">学外サービス</span>
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://idp-gakunin.nap.gsic.titech.ac.jp:443/gakuninlink/service/" rel="noopener noreferrer">学認（GakuNin）</a></li>
+                </ul>
+            </li>
+
+                  <li><span class="Item"><img src="/GetAccess/images/default.gif">ソフトウェアライセンス提供</span>
+    
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/software_download/" rel="noopener noreferrer">ソフトウェア(3:ダウンロード)</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/o365account/" rel="noopener noreferrer">Microsoft365アカウント（テスト公開中）</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://idp-saas.nap.gsic.titech.ac.jp:443/authid_adobe/" rel="noopener noreferrer">Adobe</a></li>
+                </ul>
+            </li>
+
+              <li><span class="Item"><img src="/GetAccess/images/default.gif">ポータル設定メニュー</span>
+                <ul class="Nested">
+
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/changepwd/personal/login" rel="noopener noreferrer">パスワード変更</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/mailaddresscreate/" rel="noopener noreferrer">姓名読み登録</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://portal.nap.gsic.titech.ac.jp:443/idgmca/index.jsp" rel="noopener noreferrer">One-Time Password 設定</a></li>
+                          <li><img src="/GetAccess/images/sekapp.jpg"><a href="https://rp.nap.gsic.titech.ac.jp:443/CGI/User_Timeout/User_Timeout.php" rel="noopener noreferrer">タイムアウト設定</a></li>
+                </ul>
+            </li>
+            <li class="Explain"><span>*Mouse Actions &nbsp;&nbsp;: &nbsp;&nbsp;click / mouse over (500 ms) / doubble click</span>
+            </li>
+          </ul>
+        </li>
+          </ul>
+        </li>
+      </ul>
+
+  <center>
+    <IMG class="banner" SRC="/GetAccess/images/loginbanner.jpg" BORDER="0">
+  <div align="right">
+    <a href="/GetAccess/ResourceList?lang=en" target="_self">English</a>
+    &nbsp;&nbsp;
+  </div>
+  <a href="/GetAccess/Logout" target="_self"><img src="/GetAccess/images/ja_JP/logout_bt.gif" border=0></a>
+  <br>
+  <br>
+  <table BGCOLOR="WHITE" class="all">
+    <tr><td>&nbsp;</TD></tr>
+    <tr>
+      <td>
+        <table align="CENTER" border=0 frame=0  class="category">
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+      <td><font size=+2>教務系サービス</font></td>
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://kyomu2.gakumu.titech.ac.jp:443/Titech/Default.aspx" rel="noopener noreferrer">教務Webシステム（Web system for S&F）</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://t2schola.titech.ac.jp:443/auth/eltitech/autologin.php" rel="noopener noreferrer">T2SCHOLA</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://secure.ocw.titech.ac.jp:443/ocwi/index.php" rel="noopener noreferrer">TOKYO TECH OCW-i</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://portfolio.gakumu.titech.ac.jp:443/" rel="noopener noreferrer">東工大学修ポートフォリオ（TokyoTechPortfolio）</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://kenshinweb.gakumu.titech.ac.jp:443/kenshinwebmypage/jsp/dantai/userlogin.jsp" rel="noopener noreferrer">学生一般定期健康診断　予約・問診</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+      <td><font size=+2>メール関連サービス</font></td>
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://mailv3.m.titech.ac.jp:443/cgi-bin/loginweb" rel="noopener noreferrer">Tokyo Tech Mail</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/mailauthid/" rel="noopener noreferrer">共通メール認証ID</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/DeepMail/cgi-bin/sso.cgi" rel="noopener noreferrer">Mailing List</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+            <td><font size=+2>各種情報サービス</font></td>
+    
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://vlmgr-02.edu2019.gsic.titech.ac.jp:443/idm/upc/" rel="noopener noreferrer">教育用電子計算機システム：[学内専用]</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://portal.t3.gsic.titech.ac.jp:443/ptl/ga/sso/" rel="noopener noreferrer">TSUBAME ポータル</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://t2report.rpd.titech.ac.jp:443/auth/getaccess" rel="noopener noreferrer">T2Report</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://request.libra.titech.ac.jp:443/portal/user.php?plang=jpn" rel="noopener noreferrer">図書館サービス：Library Service</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://lsci.rpd.titech.ac.jp:443/TokyoTech/login_portal.aspx" rel="noopener noreferrer">人を対象とする研究倫理審査申請：[学内専用]</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://apm.nap.gsic.titech.ac.jp:443/" rel="noopener noreferrer">学内ネットワークアクセス（SSL-VPN）</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://t2r2-inside.star.titech.ac.jp:443/t2r2/login.do" rel="noopener noreferrer">東工大リサーチリポジトリ（T2R2）</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://search-inside.star.titech.ac.jp:443/index.act" rel="noopener noreferrer">東工大STARサーチ（STAR Search）</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+      <td><font size=+2>学外サービス</font></td>
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://idp-gakunin.nap.gsic.titech.ac.jp:443/gakuninlink/service/" rel="noopener noreferrer">学認（GakuNin）</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+            <td><font size=+2>ソフトウェアライセンス提供</font></td>
+    
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/software_download/" rel="noopener noreferrer">ソフトウェア(3:ダウンロード)</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/o365account/" rel="noopener noreferrer">Microsoft365アカウント（テスト公開中）</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://idp-saas.nap.gsic.titech.ac.jp:443/authid_adobe/" rel="noopener noreferrer">Adobe</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  <tr>
+    <td><img src="/GetAccess/images/default.gif"></td>
+
+      <td><font size=+2>ポータル設定メニュー</font></td>
+  
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+    <td class="resource">
+    <table BGCOLOR="WHITE" class="simple">
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/changepwd/personal/login" rel="noopener noreferrer">パスワード変更</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/mailaddresscreate/" rel="noopener noreferrer">姓名読み登録</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://portal.nap.gsic.titech.ac.jp:443/idgmca/index.jsp" rel="noopener noreferrer">One-Time Password 設定</a><br></td>
+  </tr>
+  <tr>
+    <td><img align="middle" src="/GetAccess/images/sekapp.jpg"></td>
+    <td><a href="https://rp.nap.gsic.titech.ac.jp:443/CGI/User_Timeout/User_Timeout.php" rel="noopener noreferrer">タイムアウト設定</a><br></td>
+  </tr>
+  </table>
+  <br><br>
+  </td>
+  </tr>
+  </table>
+  </td>
+  </tr>
+  </table>
+  </center>
+  <br>
+  <DIV align="right">getaccess001 &nbsp;&nbsp;</DIV>
+
+  
+    <script>
+
+      const body = document.querySelector("body");
+      body.addEventListener("dblclick", function() {
+        this.querySelector("#DynamicMenu > li > .Nested").classList.toggle("Item-Appear");
+        this.querySelector("#DynamicMenu > li > .Item").classList.toggle("Item-Down");
+      });
+  
+  
+      const menu = document.querySelectorAll("#DynamicMenu > li > .Item");
+      menu.forEach(function(value) {
+        value.addEventListener("click", function() {
+          this.parentElement.querySelector(".Nested").classList.toggle("Item-Appear");
+          this.classList.toggle("Item-Down");
+        });
+  
+        value.addEventListener("mouseenter", function() {
+          this.parentElement.querySelector(".Nested").classList.add("Item-Appear");
+          this.classList.add("Item-Down");
+        });
+      })
+  
+  
+      const category = document.querySelectorAll("#DynamicMenu > li > .Nested > li > .Item");
+      category.forEach(function(value) {
+        this.myData = {
+          active: "false",
+          time: performance.now()
+        };
+
+        value.addEventListener("click", function() {
+          var conflictPrevention = 500;
+          if ( ( performance.now() - this.myData.time ) >= conflictPrevention ) {
+            this.parentElement.querySelector(".Nested").classList.toggle("Item-Appear");
+            this.classList.toggle("Item-Down");
+            
+            this.myData = {
+              active: "false",
+              time: performance.now()
+            };
+          }
+        });
+  
+        /* "mouseover" だと子要素（img）でも発生してしまうので"mouseenter"にした */
+        value.addEventListener("mouseenter", function() {
+          var hoverDelay = 500;
+          this.myData = {
+            active: "true",
+            time: performance.now()
+          };
+          function hover(Item) {
+            if ( Item.myData.active == "true" && ( performance.now() - Item.myData.time ) >= hoverDelay ) {
+              Item.parentElement.querySelector(".Nested").classList.toggle("Item-Appear");
+              Item.classList.toggle("Item-Down");
+
+              Item.myData = {
+                active: "false",
+                time: performance.now()
+              };
+            }
+          }
+          setTimeout(hover, hoverDelay, this);
+        });
+  
+        value.parentElement.addEventListener("mouseleave", function() {
+          this.querySelector(".Item").myData = {
+            active: "false",
+            time: performance.now()
+          };
+        });
+      })
+
+    </script>
+
+  </body>
+</html>
+
+
