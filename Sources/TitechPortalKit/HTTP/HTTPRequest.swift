@@ -8,12 +8,12 @@ enum BaseURL {
     static var origin = "https://portal-mock.titech.app"
     static var host = "portal-mock.titech.app"
 
-    static func changeToMock() {}
+    static func changeToMockServer() {}
     #else
     static var origin = "https://portal.nap.gsic.titech.ac.jp"
     static var host = "portal.nap.gsic.titech.ac.jp"
 
-    static func changeToMock() {
+    static func changeToMockServer() {
         origin = "https://portal-mock.titech.app"
         host = "portal-mock.titech.app"
     }

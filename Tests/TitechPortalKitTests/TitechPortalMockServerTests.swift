@@ -3,7 +3,7 @@ import XCTest
 
 final class TitechPortalMockServerTests: XCTestCase {
     func testMockServerLogin() async throws {
-        TitechPortal.changeToMock()
+        TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
 
         try! await portal.login(
@@ -18,7 +18,7 @@ final class TitechPortalMockServerTests: XCTestCase {
     }
     
     func testMockServerLoginInvalidPassword() async throws {
-        TitechPortal.changeToMock()
+        TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
 
         do {
@@ -38,7 +38,7 @@ final class TitechPortalMockServerTests: XCTestCase {
     }
     
     func testMockServerLoginInvalidMatrix() async throws {
-        TitechPortal.changeToMock()
+        TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
 
         do {
@@ -58,30 +58,24 @@ final class TitechPortalMockServerTests: XCTestCase {
     }
     
     func testMockServerCheckUsernamePassword() async throws {
-        TitechPortal.changeToMock()
+        TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
 
         let checkResult = try! await portal.checkUsernamePassword(
-            account: TitechPortalAccount(
-                username: "00B00000",
-                password: "passw0rd&",
-                matrixcode: [:]
-            )
+            username: "00B00000",
+            password: "passw0rd&"
         )
         
         XCTAssertTrue(checkResult)
     }
 
     func testMockServerFetchCurrentMatrix() async throws {
-        TitechPortal.changeToMock()
+        TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
 
         let currentMatrix = try! await portal.fetchCurrentMatrix(
-            account: TitechPortalAccount(
-                username: "00B00000",
-                password: "passw0rd&",
-                matrixcode: [:]
-            )
+            username: "00B00000",
+            password: "passw0rd&"
         )
         
         XCTAssertEqual(

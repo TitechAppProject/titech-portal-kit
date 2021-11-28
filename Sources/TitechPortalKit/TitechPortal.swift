@@ -32,7 +32,7 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, account: account)
+        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: account.username, password: account.password)
         
         let matrixcodePageHtml: String
         
@@ -60,7 +60,7 @@ public struct TitechPortal {
         }
         /// マトリクスコード入力ページのInputsのパース
         let matrixcodePageInputs = try parseHTMLInput(html: matrixcodePageHtml)
-        /// マトリクスコード入力ページのInputsのパース
+        /// マトリクスコード入力ページのCurrentMatrixのパース
         let matrixcodePageCurrentMatrix = try parseCurrentMatrixes(html: matrixcodePageHtml)
         /// マトリクスコードFormの送信
         let matrixcodePageSubmitHtml = try await submitMatrixcode(htmlInputs: matrixcodePageInputs, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode)
@@ -73,7 +73,7 @@ public struct TitechPortal {
     /// UsernameとPasswordのみが正しいかチェック
     /// - Parameter account: チェックするアカウント情報
     /// - Returns: 正しくログインできればtrue, エラーであればfalseを返す
-    public func checkUsernamePassword(account: TitechPortalAccount) async throws -> Bool {
+    public func checkUsernamePassword(username: String, password: String) async throws -> Bool {
         /// パスワードページの取得
         let passwordPageHtml = try await fetchPasswordPage()
         /// パスワードページのバリデーション
@@ -83,17 +83,9 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, account: account)
+        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
         
-        if try validateOtpPage(html: passwordPageSubmitHtml) {
-            return true
-        }
-        
-        if try validateMatrixcodePage(html: passwordPageSubmitHtml) {
-            return true
-        }
-        
-        return false
+        return try validateOtpPage(html: passwordPageSubmitHtml) || validateMatrixcodePage(html: passwordPageSubmitHtml)
     }
     
     /// ログイン済みかを判定
@@ -107,7 +99,7 @@ public struct TitechPortal {
     /// 現在のマトリクスを取得
     /// - Parameter account: ログイン情報
     /// - Returns: 現在のマトリクス
-    public func fetchCurrentMatrix(account: TitechPortalAccount) async throws -> [TitechPortalMatrix] {
+    public func fetchCurrentMatrix(username: String, password: String) async throws -> [TitechPortalMatrix] {
         /// パスワードページの取得
         let passwordPageHtml = try await fetchPasswordPage()
         /// パスワードページのバリデーション
@@ -117,7 +109,7 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, account: account)
+        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
         
         let matrixcodePageHtml: String
         
@@ -161,11 +153,8 @@ public struct TitechPortal {
         return bodyHtml.contains("Please input your account &amp; password.")
     }
 
-    func submitPassword(htmlInputs: [HTMLInput], account: TitechPortalAccount) async throws -> String {
-        let injectedHtmlInputs = inject(htmlInputs, injectValues: [
-            .text: [account.username],
-            .password: [account.password]
-        ])
+    func submitPassword(htmlInputs: [HTMLInput], username: String, password: String) async throws -> String {
+        let injectedHtmlInputs = inject(htmlInputs, username: username, password: password)
         
         let request = PasswordSubmitRequest(htmlInputs: injectedHtmlInputs)
 
@@ -204,7 +193,7 @@ public struct TitechPortal {
     }
     
     func submitMatrixcode(htmlInputs: [HTMLInput], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) async throws -> String {
-        let injectedHtmlInputs = injectMatrixcode(htmlInputs, parsedMatrix: parsedMatrix, matrixcodes: matrixcodes)
+        let injectedHtmlInputs = inject(htmlInputs, parsedMatrix: parsedMatrix, matrixcodes: matrixcodes)
 
         let request = MatrixcodeSubmitRequest(htmlInputs: injectedHtmlInputs)
 
@@ -259,23 +248,31 @@ public struct TitechPortal {
         }
     }
     
-    func inject(_ inputs: [HTMLInput], injectValues: [HTMLInputType: [String]]) -> [HTMLInput] {
-        var valueIndex = [HTMLInputType: Int]()
+    func inject(_ inputs: [HTMLInput], username: String, password: String) -> [HTMLInput] {
+        guard
+            let firstTextInput = inputs.first(where: { $0.type == .text }),
+            let firstPasswordInput = inputs.first(where: { $0.type == .password })
+        else {
+            // TODO: エラーにした方がいいかも
+            return inputs
+        }
 
-        return inputs.map { input -> HTMLInput in
-            var newInput = input
-            let index = valueIndex[input.type] ?? 0
-            if let values = injectValues[input.type],
-               values.count > index
-            {
-                valueIndex[input.type] = index + 1
-                newInput.value = values[index]
+        return inputs.map {
+            if $0 == firstTextInput {
+                var newInput = $0
+                newInput.value = username
+                return newInput
             }
-            return newInput
+            if $0 == firstPasswordInput {
+                var newInput = $0
+                newInput.value = password
+                return newInput
+            }
+            return $0
         }
     }
     
-    func injectMatrixcode(_ inputs: [HTMLInput], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) -> [HTMLInput] {
+    func inject(_ inputs: [HTMLInput], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) -> [HTMLInput] {
         guard !parsedMatrix.isEmpty else {
             return inputs
         }
@@ -296,7 +293,7 @@ public struct TitechPortal {
         }
     }
     
-    public static func changeToMock() {
-        BaseURL.changeToMock()
+    public static func changeToMockServer() {
+        BaseURL.changeToMockServer()
     }
 }
