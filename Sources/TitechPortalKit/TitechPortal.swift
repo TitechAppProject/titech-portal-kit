@@ -11,6 +11,8 @@ public enum TitechPortalLoginError: Error {
     
     case noMatrixcodeOption
     case failedCurrentMatrixParse
+    
+    case alreadyLoggedin
 }
 
 public struct TitechPortal {
@@ -33,9 +35,14 @@ public struct TitechPortal {
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
         let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: account.username, password: account.password)
-        
+
+        /// すでにログインセッションがある場合はパスワード入力後にすぐにResourceListページに飛ぶ
+        if try validateResourceListPage(html: passwordPageHtml) {
+            throw TitechPortalLoginError.alreadyLoggedin
+        }
+
         let matrixcodePageHtml: String
-        
+
         if try validateOtpPage(html: passwordPageSubmitHtml) {
             /// OTP選択ページのInputsのパース
             let otpSelectPageInputs = try parseHTMLInput(html: passwordPageSubmitHtml)
@@ -110,7 +117,12 @@ public struct TitechPortal {
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
         let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
-        
+
+        /// すでにログインセッションがある場合はパスワード入力後にすぐにResourceListページに飛ぶ
+        if try validateResourceListPage(html: passwordPageHtml) {
+            throw TitechPortalLoginError.alreadyLoggedin
+        }
+
         let matrixcodePageHtml: String
         
         if try validateOtpPage(html: passwordPageSubmitHtml) {
