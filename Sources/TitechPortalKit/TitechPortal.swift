@@ -7,7 +7,7 @@ import Kanna
 public enum TitechPortalLoginError: Error {
     case invalidPasswordPageHtml
     case invalidMatrixcodePageHtml
-    case invalidResourceListPageHtml
+    case invalidResourceListPageHtml(currentMatrices: [TitechPortalMatrix])
     
     case noMatrixcodeOption
     case failedCurrentMatrixParse
@@ -73,7 +73,7 @@ public struct TitechPortal {
         let matrixcodePageSubmitHtml = try await submitMatrixcode(htmlInputs: matrixcodePageInputs, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode)
         /// リソースリストページのバリデーション
         guard try validateResourceListPage(html: matrixcodePageSubmitHtml) else {
-            throw TitechPortalLoginError.invalidResourceListPageHtml
+            throw TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: matrixcodePageCurrentMatrix)
         }
     }
     
