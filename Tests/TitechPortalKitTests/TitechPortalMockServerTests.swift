@@ -33,7 +33,10 @@ final class TitechPortalMockServerTests: XCTestCase {
             )
             XCTFail()
         } catch {
-            XCTAssertEqual(error as! TitechPortalLoginError, TitechPortalLoginError.invalidMatrixcodePageHtml)
+            XCTAssertEqual(
+                error as! TitechPortalLoginError,
+                TitechPortalLoginError.invalidMatrixcodePageHtml
+            )
         }
     }
     
@@ -53,7 +56,10 @@ final class TitechPortalMockServerTests: XCTestCase {
             )
             XCTFail()
         } catch {
-            XCTAssertEqual(error as! TitechPortalLoginError, TitechPortalLoginError.invalidResourceListPageHtml)
+            XCTAssertEqual(
+                error as! TitechPortalLoginError,
+                TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: [TitechPortalKit.TitechPortalMatrix.d2, TitechPortalKit.TitechPortalMatrix.e2, TitechPortalKit.TitechPortalMatrix.i6])
+            )
         }
     }
     

@@ -23,10 +23,16 @@ struct MatrixcodeSubmitRequest: HTTPRequest {
     ]
     
     var body: [String : String]?
-    
-    init(htmlInputs: [HTMLInput]) {
-        body = htmlInputs.reduce(into: [String: String]()) {
+
+    init(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect]) {
+        let inputsDic = htmlInputs.reduce(into: [String: String]()) {
             $0[$1.name] = $1.value
         }
+
+        let selectsDic = htmlSelects.reduce(into: [String: String]()) {
+            $0[$1.name] = $1.selectedValue
+        }
+
+        body = inputsDic.merging(selectsDic, uniquingKeysWith: { a, _ in a })
     }
 }

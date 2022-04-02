@@ -4,7 +4,7 @@ import FoundationNetworking
 #endif
 import Kanna
 
-public enum TitechPortalLoginError: Error {
+public enum TitechPortalLoginError: Error, Equatable {
     case invalidPasswordPageHtml
     case invalidMatrixcodePageHtml
     case invalidResourceListPageHtml(currentMatrices: [TitechPortalMatrix])
@@ -69,8 +69,10 @@ public struct TitechPortal {
         let matrixcodePageInputs = try parseHTMLInput(html: matrixcodePageHtml)
         /// マトリクスコード入力ページのCurrentMatrixのパース
         let matrixcodePageCurrentMatrix = try parseCurrentMatrixes(html: matrixcodePageHtml)
+        ///マトリクスコード入力ページのSelectのパース
+        let matrixcodePageSelects = try parseHTMLSelect(html: matrixcodePageHtml)
         /// マトリクスコードFormの送信
-        let matrixcodePageSubmitHtml = try await submitMatrixcode(htmlInputs: matrixcodePageInputs, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode)
+        let matrixcodePageSubmitHtml = try await submitMatrixcode(htmlInputs: matrixcodePageInputs, htmlSelects: matrixcodePageSelects, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode)
         /// リソースリストページのバリデーション
         guard try validateResourceListPage(html: matrixcodePageSubmitHtml) else {
             throw TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: matrixcodePageCurrentMatrix)
@@ -204,10 +206,18 @@ public struct TitechPortal {
         return bodyHtml.contains("Matrix Authentication")
     }
     
-    func submitMatrixcode(htmlInputs: [HTMLInput], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) async throws -> String {
+    func submitMatrixcode(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) async throws -> String {
         let injectedHtmlInputs = inject(htmlInputs, parsedMatrix: parsedMatrix, matrixcodes: matrixcodes)
 
-        let request = MatrixcodeSubmitRequest(htmlInputs: injectedHtmlInputs)
+        let injectedSelects: [HTMLSelect] = htmlSelects.map {
+            if $0.values.contains("NoOtherIGAuthOption") {
+                return HTMLSelect(name: $0.name, values: $0.values, selectedValue: "NoOtherIGAuthOption")
+            } else {
+                return $0
+            }
+        }
+
+        let request = MatrixcodeSubmitRequest(htmlInputs: injectedHtmlInputs, htmlSelects: injectedSelects)
 
         return try await httpClient.send(request)
     }
