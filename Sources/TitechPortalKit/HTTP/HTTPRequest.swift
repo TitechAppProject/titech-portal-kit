@@ -36,11 +36,7 @@ protocol HTTPRequest {
 }
 
 extension HTTPRequest {
-    static var userAgent: String {
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1"
-    }
-
-    func generate(cookies: [HTTPCookie]) -> URLRequest {
+    func generate(userAgent: String) -> URLRequest {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             fatalError("Unable to create URL components")
         }
@@ -50,8 +46,7 @@ extension HTTPRequest {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             request.httpShouldHandleCookies = true
-            request.allHTTPHeaderFields = headerFields ?? [:]
-            request.allHTTPHeaderFields = HTTPCookie.requestHeaderFields(with: cookies)
+            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent" : userAgent], uniquingKeysWith: { key1, _ in key1}) ?? [:]
             return request
         case .post:
             guard let url = components.url else {
@@ -67,9 +62,8 @@ extension HTTPRequest {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             request.httpShouldHandleCookies = true
-            request.httpBody = (components.query ?? "").data(using: String.Encoding.utf8)
-            request.allHTTPHeaderFields = headerFields ?? [:]
-            request.allHTTPHeaderFields = HTTPCookie.requestHeaderFields(with: cookies)
+            request.httpBody = (components.query ?? "").data(using: .utf8)
+            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent" : userAgent], uniquingKeysWith: { key1, _ in key1}) ?? [:]
 
             return request
         }

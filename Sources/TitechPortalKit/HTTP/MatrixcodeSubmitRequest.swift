@@ -16,7 +16,6 @@ struct MatrixcodeSubmitRequest: HTTPRequest {
         "Origin": BaseURL.origin,
         "Connection": "keep-alive",
         "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": userAgent,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Encoding": "br, gzip, deflate",
         "Accept-Language": "ja-jp",

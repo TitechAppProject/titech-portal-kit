@@ -17,9 +17,10 @@ public enum TitechPortalLoginError: Error, Equatable {
 
 public struct TitechPortal {
     private let httpClient: HTTPClient
+    public static let defaultUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1"
 
-    public init(urlSession: URLSession) {
-        self.httpClient = HTTPClientImpl(urlSession: urlSession)
+    public init(urlSession: URLSession, userAgent: String = TitechPortal.defaultUserAgent) {
+        self.httpClient = HTTPClientImpl(urlSession: urlSession, userAgent: userAgent)
     }
     
     /// TitechPortalにログイン

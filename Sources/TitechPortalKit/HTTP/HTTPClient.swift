@@ -12,16 +12,18 @@ struct HTTPClientImpl: HTTPClient {
     private let urlSession: URLSession
     private let urlSessionDelegate: URLSessionTaskDelegate
     private let urlSessionDelegateWithoutRedirect: URLSessionTaskDelegate
+    private let userAgent: String
 
-    init(urlSession: URLSession) {
+    init(urlSession: URLSession, userAgent: String) {
         self.urlSession =  urlSession
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
+        self.userAgent = userAgent
     }
 
     func send(_ request: HTTPRequest) async throws -> String {
         let (data, _) = try await urlSession.data(
-            for: request.generate(cookies: []),
+            for: request.generate(userAgent: userAgent),
                delegate: urlSessionDelegate
         )
 
@@ -30,7 +32,7 @@ struct HTTPClientImpl: HTTPClient {
     
     func statusCode(_ request: HTTPRequest) async throws -> Int {
         let (_, response) = try await urlSession.data(
-            for: request.generate(cookies: []),
+            for: request.generate(userAgent: userAgent),
                delegate: urlSessionDelegateWithoutRedirect
         )
 
