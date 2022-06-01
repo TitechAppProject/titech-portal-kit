@@ -181,7 +181,7 @@ public struct TitechPortal {
 
         let bodyHtml = doc.css("body").first?.innerHTML ?? ""
 
-        return bodyHtml.contains("Select Label for OTP")
+        return bodyHtml.contains("Select Label for OTP") || bodyHtml.contains("Enter Token Dynamic Password")
     }
     
     func submitOtpSelect(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect]) async throws -> String {

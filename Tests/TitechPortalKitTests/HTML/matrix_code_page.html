@@ -1,0 +1,295 @@
+<!-- Template: loginPAM.html
+
+Requires
+    Substitutes (to be started with a $)
+
+**********************************************************************
+NOTE: DO NOT DELETE THE COMMENT BELOW:
+      -------------------------------
+
+<getAccessTrans name=dynTable>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+     $NameLabel <br>
+     $NameValue
+   </td>
+ </tr>
+</getAccessTrans>
+**********************************************************************
+<BASE target='_top'>
+-->
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--
+<meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,maximum-scale=0.5,user-scalable=yes">
+-->
+<meta name="viewport" content="width=device-width,user-scalable=yes">
+<TITLE>Entrust GetAccess</TITLE>
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<SCRIPT LANGUAGE="JavaScript">
+var authType = "nothing";
+
+
+function idgisSetRedirectionCookie( theForm ) {
+        var result = false;
+
+        if ( isSingleClick() ) {
+            index = theForm.AUTHMETHOD.selectedIndex;
+
+            if(theForm.AUTHTYPE.value=="Cert"){
+        return true;
+            }
+
+    if(index != undefined){
+if (theForm.AUTHMETHOD.options[index].value == "CERTIFICATE") {
+theForm.AUTHTYPE.value="Cert";
+return true;
+}
+    }
+                result = true;
+        }
+
+        return result;
+}
+
+
+var TIT_Event = {
+addEvent: function(target, func, tasktype) {
+if (target.addEventListener)
+target.addEventListener(tasktype, func, false);
+else if (target.attachEvent)
+target.attachEvent('on'+tasktype, function(){return func.call(target, window.event)});
+},
+
+addKeyUpEvent: function(target, func) {
+TIT_Event.addEvent(target,func,"keyup");
+}
+}
+
+function checkFocus( event, target, nexttarget, submitflag ) {
+    if ( target.value.length == 1 && event.key != "Backspace" ){
+    //if ( target.value.length > 0 ){
+if ( submitflag != 1 ) {
+nexttarget.focus();
+}
+//else {
+//document.login.submit();
+//}
+}
+}
+
+function findFocus()
+{
+var matrix_flag = true;
+var option_list =  document.getElementsByTagName('option');
+for ( var i = 0; i < option_list.length; i++ ) {
+if ( option_list[i].value == 'GridAuthOption' ) {
+matrix_flag = false;
+}
+}
+
+var authentication_tag =  document.getElementById('authentication');
+
+if ( authentication_tag.innerHTML.indexOf( 'Select Label for OTP' ) > -1 ) {
+matrix_flag = false;
+}
+
+authentication_tag =  document.getElementById('authentication');
+
+if ( authentication_tag.innerHTML.indexOf( 'OTP Delivered to' ) > -1 ) {
+matrix_flag = false;
+}
+
+var table_supplement = document.getElementById('supplement');
+
+if ( matrix_flag ) {
+var checkflag = 1;
+ INPUT = document.getElementsByTagName("input");
+TIT_Event.addKeyUpEvent( INPUT.item(1), function(e){ checkFocus( e, this, INPUT.item(2), 0 ); }  );
+TIT_Event.addKeyUpEvent( INPUT.item(2), function(e){ checkFocus( e, this, INPUT.item(3), 0 ); }  );
+TIT_Event.addKeyUpEvent( INPUT.item(3), function(e){ checkFocus( e, this, INPUT.item(4), 1 ); }  );
+ INPUT.item(1).focus();
+
+var supplement = "";
+supplement += "<TR>\n";
+supplement += "  <TD>\n";
+supplement += "    <UL>\n";
+supplement += "      <LI>マトリクス入力では<B>『半角』</B>であれば<B>『大文字・小文字』</B>の区別をしません。</LI>\n";
+supplement += "      <LI>Matrix entries are NOT case-sensitive. </LI>\n";
+supplement += "    </UL>\n";
+supplement += "  </TD>\n";
+supplement += "</TR>\n";
+
+table_supplement.innerHTML = supplement;
+}
+else {
+var td_list = document.getElementsByTagName('td');
+
+for ( var i = 0; i < td_list.length; i++ ) {
+if ( td_list[i].innerHTML == 'Matrix Authentication' ) {
+td_list[i].innerHTML = 'One-Time Password Authentication';
+}
+}
+
+}
+
+}
+
+
+function isSingleClick() {
+if (checkflag == 1) {
+checkflag = checkflag + 1
+return true; }
+else {
+return false;
+ }
+}
+
+
+</SCRIPT>
+
+<style type="text/css">
+<!--
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.form-control::-moz-placeholder {
+    color: transparent;
+}
+.form-control:-ms-input-placeholder {
+    color: transparent;
+}
+.form-control::-webkit-input-placeholder {
+    color: transparent;
+}
+
+-->
+</style>
+
+</HEAD>
+
+
+<BODY bgcolor="#FFFFFF" text="#000000" onLoad="findFocus();" onunload="document.login.reset();">
+<CENTER>
+<IMG SRC="/GetAccess/images/loginbanner.jpg" BORDER="0">
+</CENTER>
+<br>
+<center>
+
+</center>
+<br>
+
+<CENTER>
+<FORM NAME="login" METHOD="POST" AUTOCOMPLETE="off" ACTION="https://portal.nap.gsic.titech.ac.jp/GetAccess/Login" onSubmit="javascript:{ return idgisSetRedirectionCookie( this ); }">
+<TABLE border="3" cellspacing="0" cellpadding="15">
+<tr>
+<td bgcolor="#6699CC">
+<TABLE border="0" cellspacing="0" cellpadding="3" id="authentication">
+ <tr>
+   <td bgcolor="#6699CC" colspan="3" align="center">Matrix Authentication</td>
+ </tr>
+<INPUT TYPE="hidden" NAME="message0" VALUE="1554724436079"> <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+      <br>
+     <div class="col-sm-7 control-align"></div>
+   </td>
+ </tr>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+      <br>
+     <div class="col-sm-7 control-align">108008</div>
+   </td>
+ </tr>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+     [D,2] <br>
+     <div class="col-sm-7"><div class="inner-addon left-addon"> <i class="glyphicon glyphicon-lock"></i>     <INPUT TYPE="password" NAME="message3" VALUE="" SIZE="32" MAXLENGTH="200" class="form-control" ng-model="password"  placeholder="Password" ></div></div>
+   </td>
+ </tr>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+     [E,2] <br>
+     <div class="col-sm-7"><div class="inner-addon left-addon"> <i class="glyphicon glyphicon-lock"></i>     <INPUT TYPE="password" NAME="message4" VALUE="" SIZE="32" MAXLENGTH="200" class="form-control" ng-model="password"  placeholder="Password" ></div></div>
+   </td>
+ </tr>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+     [I,6] <br>
+     <div class="col-sm-7"><div class="inner-addon left-addon"> <i class="glyphicon glyphicon-lock"></i>     <INPUT TYPE="password" NAME="message5" VALUE="" SIZE="32" MAXLENGTH="200" class="form-control" ng-model="password"  placeholder="Password" ></div></div>
+   </td>
+ </tr>
+ <tr>
+   <th align="left" bgcolor="#6699CC"></th>
+   <th bgcolor="#6699CC"></th>
+   <td bgcolor="#6699CC">
+     Move to <br>other authentication <br>
+     <div class="col-sm-7"><select class="form-control" name="message6" size="1">
+<option value="NoOtherIGAuthOption">
+<option value="OTPAuthOption">OTP (One-Time Password)
+</select></div>
+
+   </td>
+ </tr>
+
+
+ <tr>
+   <td bgcolor="#6699CC"></td>
+   <td bgcolor="#6699CC"></td>
+   <td bgcolor="#6699CC"></td>
+ </tr>
+ <tr>
+   <td align="center" bgcolor="#6699CC" colspan="3">
+     <input type="submit" name="OK" value="    OK    ">
+<!--  <input type='hidden' name='LOCALE' value='ja_JP'>  -->
+     <input type='hidden' name='AUTHTYPE'>
+     <input type='hidden' name='ContinueAuth' value="true">
+<input type='hidden' name='AUTHMETHOD' value="IG">
+<input type='hidden' name='PAMSESSION' value="149dda894c349a9e169fccbbd9f">
+<input type='hidden' name='GARESOURCEID' value="resourcelistID2">
+<input type='hidden' name='pageGenTime' value="1554724436083">
+<input type='hidden' name='ID_REFERENCE' value="TCP:131.112.13.252:50008****TCP:131.112.13.252:50008****@NULL@****@NULL@****50008****IDENTIFICATION****Identification_getaccess02_32c63c****Cluster02****GAServer02****OPEN****57645">
+<input type='hidden' name='HiddenURI' value="https://portal.nap.gsic.titech.ac.jp/GetAccess/ResourceList">
+<input type='hidden' name='Template' value="idg_key">
+<input type='hidden' name='GASF' value="CERTIFICATE,IG.GRID,IG.TOKENRO,IG.OTP">
+<input type='hidden' name='LOCALE' value="ja_JP">
+<input type='hidden' name='Responses' value="7">
+
+   </td>
+  </tr>
+</TABLE>
+</td>
+</tr>
+</table>
+ <!-- Random Token feature - Start --><input type='hidden' name='CSRFFormToken' value='d47ff71f0d3d974f69abfda2bdce267f7b6132916915419'><!-- Random Token feature - End --></FORM>
+
+<TABLE id="supplement">
+</TABLE>
+
+<HR NOSHADE>
+<center>
+[<A HREF="https://portal.titech.ac.jp/">Back to top page</A>]
+</center>
+
+<DIV align="right">
+getaccess02
+</DIV>
+
+</CENTER>
+</BODY>
+</HTML>

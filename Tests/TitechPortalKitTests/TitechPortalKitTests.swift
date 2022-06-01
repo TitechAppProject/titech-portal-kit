@@ -33,6 +33,30 @@ final class TitechPortalKitTests: XCTestCase {
             ]
         )
     }
+
+    func testValidateOtpPageForMatrixcodePage() throws {
+        let portal = TitechPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "matrix_code_page", withExtension: "html")!)
+        
+        XCTAssertFalse(try! portal.validateOtpPage(html: html))
+    }
+
+    func testValidateOtpPageForOTPSelectPage() throws {
+        let portal = TitechPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "otp_select_page", withExtension: "html")!)
+        
+        XCTAssertTrue(try! portal.validateOtpPage(html: html))
+    }
+
+    func testValidateOtpPageForTOTP() throws {
+        let portal = TitechPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "totp_page", withExtension: "html")!)
+        
+        XCTAssertTrue(try! portal.validateOtpPage(html: html))
+    }
     
     func testResourceMenuValidation() throws {
         let portal = TitechPortal(urlSession: .shared)

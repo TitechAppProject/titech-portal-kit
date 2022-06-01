@@ -30,8 +30,7 @@ let package = Package(
             name: "TitechPortalKitTests",
             dependencies: ["TitechPortalKit"],
             resources: [
-                .process("password_page.html"),
-                .process("resource_list_page-ja.html")
+                .process("HTML"),
             ]),
     ]
 )
