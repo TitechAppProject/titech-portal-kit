@@ -65,4 +65,19 @@ final class TitechPortalKitTests: XCTestCase {
         
         XCTAssertTrue(try! portal.validateResourceListPage(html: html))
     }
+    
+    func testParseCurrentMatrixes() throws {
+        let portal = TitechPortal(urlSession: .shared)
+        
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "matrix_code_page", withExtension: "html")!)
+        
+        XCTAssertEqual(
+            try! portal.parseCurrentMatrixes(html: html),
+            [
+                TitechPortalMatrix.d2,
+                TitechPortalMatrix.e2,
+                TitechPortalMatrix.i6
+            ]
+        )
+    }
 }

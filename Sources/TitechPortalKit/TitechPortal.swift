@@ -255,19 +255,10 @@ public struct TitechPortal {
     }
     
     func parseCurrentMatrixes(html: String) throws -> [TitechPortalMatrix] {
-        guard let matrixArr = html.matches("\\[([A-J]{1}),([1-7]{1})\\]") else {
-            throw TitechPortalLoginError.failedCurrentMatrixParse
-        }
-
-        let alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
-
-        return matrixArr.compactMap { matrix -> TitechPortalMatrix? in
-            for alphabet in alphabets {
-                if matrix[0].contains(alphabet), let i = Int(matrix[1]) {
-                    return TitechPortalMatrix(rawValue: "\(alphabet.lowercased())\(i)")
-                }
-            }
-            return nil
+        let regex = #/\[(?<alph>[A-J]),(?<num>[1-7])\]/#
+        
+        return html.matches(of: regex).compactMap { match in
+            TitechPortalMatrix(rawValue: "\(match.alph.lowercased())\(match.num)")
         }
     }
     
