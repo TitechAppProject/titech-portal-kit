@@ -27,8 +27,8 @@ struct HTTPClientImpl: HTTPClient {
 
     func send(_ request: HTTPRequest) async throws -> String {
         #if canImport(FoundationNetworking)
-        let data = try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: request) {data, response, error in
+        let data: Data = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) {data, response, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
@@ -47,9 +47,9 @@ struct HTTPClientImpl: HTTPClient {
     }
     
     func statusCode(_ request: HTTPRequest) async throws -> Int {
-        #if canImport(FoundationNetWorking)
-        let response = try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: request) {data, response, error in
+        #if canImport(FoundationNetworking)
+        let response: URLResponse? = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) {data, response, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else {
