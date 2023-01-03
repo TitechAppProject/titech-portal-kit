@@ -10,31 +10,59 @@ protocol HTTPClient {
 
 struct HTTPClientImpl: HTTPClient {
     private let urlSession: URLSession
+    #if !canImport(FoundationNetworking)
     private let urlSessionDelegate: URLSessionTaskDelegate
     private let urlSessionDelegateWithoutRedirect: URLSessionTaskDelegate
+    #endif
     private let userAgent: String
 
     init(urlSession: URLSession, userAgent: String) {
         self.urlSession =  urlSession
+        #if !canImport(FoundationNetworking)
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
+        #endif
         self.userAgent = userAgent
     }
 
     func send(_ request: HTTPRequest) async throws -> String {
+        #if canImport(FoundationNetworking)
+        let data = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request) {data, response, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: data ?? Data())
+                }
+            }.resume()
+        }
+        #else
         let (data, _) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
                delegate: urlSessionDelegate
         )
+        #endif
 
         return String(data: data, encoding: .utf8) ?? ""
     }
     
     func statusCode(_ request: HTTPRequest) async throws -> Int {
+        #if canImport(FoundationNetWorking)
+        let response = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request) {data, response, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: response)
+                }
+            }.resume()
+        }
+        #else
         let (_, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
                delegate: urlSessionDelegateWithoutRedirect
         )
+        #endif
 
         return (response as? HTTPURLResponse)?.statusCode ?? 0
     }
