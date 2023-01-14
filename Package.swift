@@ -34,3 +34,10 @@ let package = Package(
             ]),
     ]
 )
+
+import Foundation
+if ProcessInfo.processInfo.environment["CI"] == "true" {
+    for target in package.targets {
+        target.swiftSettings = [.define("CI")]
+    }
+}

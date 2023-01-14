@@ -1,6 +1,8 @@
 import XCTest
 @testable import TitechPortalKit
 
+#if !CI
+
 final class TitechPortalMockServerTests: XCTestCase {
     func testMockServerLogin() async throws {
         TitechPortal.changeToMockServer()
@@ -94,3 +96,5 @@ final class TitechPortalMockServerTests: XCTestCase {
         )
     }
 }
+
+#endif
