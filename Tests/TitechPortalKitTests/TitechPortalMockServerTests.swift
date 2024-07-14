@@ -58,7 +58,7 @@ final class TitechPortalMockServerTests: XCTestCase {
         } catch {
             XCTAssertEqual(
                 error as! TitechPortalLoginError,
-                TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: [TitechPortalKit.TitechPortalMatrix.d2, TitechPortalKit.TitechPortalMatrix.e2, TitechPortalKit.TitechPortalMatrix.i6])
+                TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: [TitechPortalKit.TitechPortalMatrix.d2, TitechPortalKit.TitechPortalMatrix.e2, TitechPortalKit.TitechPortalMatrix.i6], html: "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head>\n<title>404 Not Found</title>\n</head><body>\n<h1>Not Found</h1>\n<p>The requested URL was not found on this server.</p>\n</body></html>\n")
             )
         }
     }
