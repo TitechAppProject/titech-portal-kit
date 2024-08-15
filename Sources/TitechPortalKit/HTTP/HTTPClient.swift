@@ -1,4 +1,6 @@
 import Foundation
+import os
+
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -51,6 +53,10 @@ struct HTTPClientMock: HTTPClient {
 }
 
 class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
+    #if DEBUG
+    private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegate")
+    #endif
+
     func urlSession(
         _ session: URLSession,
         task: URLSessionTask,
@@ -59,30 +65,38 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
         completionHandler: @escaping (URLRequest?) -> Swift.Void
     ) {
         #if DEBUG
-            print("")
-            print("\(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")")
-            print("  requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])")
-            print("  requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")")
-            print("  responseHeader: \(response.allHeaderFields)")
-            print("  redirect -> \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")")
-            print("")
+        logger.debug(
+            """
+            \(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")
+              requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])
+              requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")
+              responseHeader: \(response.allHeaderFields)
+              redirect -> \(request.httpMethod ?? "") \(request.url?.absoluteString ?? "")
+            """
+        )
         #endif
-        
+
         completionHandler(request)
     }
 
     func urlSession(_: URLSession, task: URLSessionTask, didFinishCollecting _: URLSessionTaskMetrics) {
         #if DEBUG
-            print("")
-            print("200 \(task.currentRequest!.httpMethod!) \(task.currentRequest!.url!.absoluteString)")
-            print("  requestHeader: \(task.currentRequest!.allHTTPHeaderFields ?? [:])")
-            print("  requestBody: \(String(data: task.originalRequest!.httpBody ?? Data(), encoding: .utf8) ?? "")")
-            print("")
+        logger.debug(
+            """
+            200 \(task.currentRequest!.httpMethod!) \(task.currentRequest!.url!.absoluteString)
+              requestHeader: \(task.currentRequest!.allHTTPHeaderFields ?? [:])
+              requestBody: \(String(data: task.originalRequest!.httpBody ?? Data(), encoding: .utf8) ?? "")
+            """
+        )
         #endif
     }
 }
 
 class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
+    #if DEBUG
+    private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegateWithoutRedirect")
+    #endif
+
     func urlSession(
         _: URLSession,
         task: URLSessionTask,
@@ -91,24 +105,28 @@ class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
         completionHandler: @escaping (URLRequest?) -> Swift.Void
     ) {
         #if DEBUG
-            print("")
-            print("\(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")")
-            print("  requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])")
-            print("  requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")")
-            print("")
+        logger.debug(
+            """
+            \(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")
+              requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])
+              requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")
+            """
+        )
         #endif
         completionHandler(nil)
     }
 
     func urlSession(_: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
         #if DEBUG
-            if metrics.redirectCount == 0 {
-                print("")
-                print("200 \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")")
-                print("  requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])")
-                print("  requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")")
-                print("")
-            }
+        if metrics.redirectCount == 0 {
+            logger.debug(
+                """
+                200 \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")
+                  requestHeader: \(task.currentRequest?.allHTTPHeaderFields ?? [:])
+                  requestBody: \(String(data: task.originalRequest?.httpBody ?? Data(), encoding: .utf8) ?? "")
+                """
+            )
+        }
         #endif
     }
 }
