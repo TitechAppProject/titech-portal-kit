@@ -1,5 +1,8 @@
 import Foundation
+
+#if canImport(os)
 import os
+#endif
 
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -12,31 +15,59 @@ protocol HTTPClient {
 
 struct HTTPClientImpl: HTTPClient {
     private let urlSession: URLSession
+    #if !canImport(FoundationNetworking)
     private let urlSessionDelegate: URLSessionTaskDelegate
     private let urlSessionDelegateWithoutRedirect: URLSessionTaskDelegate
+    #endif
     private let userAgent: String
 
     init(urlSession: URLSession, userAgent: String) {
         self.urlSession = urlSession
+        #if !canImport(FoundationNetworking)
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
+        #endif
         self.userAgent = userAgent
     }
 
     func send(_ request: HTTPRequest) async throws -> String {
+        #if canImport(FoundationNetworking)
+        let data: Data = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, _, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: data ?? Data())
+                }
+            }.resume()
+        }
+        #else
         let (data, _) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegate
         )
+        #endif
 
         return String(data: data, encoding: .utf8) ?? ""
     }
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
+        #if canImport(FoundationNetworking)
+        let response: URLResponse = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { _, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: response!)
+                }
+            }.resume()
+        }
+        #else
         let (_, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegateWithoutRedirect
         )
+        #endif
 
         return (response as? HTTPURLResponse)?.statusCode ?? 0
     }
@@ -53,7 +84,7 @@ struct HTTPClientMock: HTTPClient {
 }
 
 class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
-    #if DEBUG
+    #if DEBUG && canImport(os)
     private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegate")
     #endif
 
@@ -64,7 +95,7 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
         newRequest request: URLRequest,
         completionHandler: @escaping (URLRequest?) -> Swift.Void
     ) {
-        #if DEBUG
+        #if DEBUG && canImport(os)
         logger.debug(
             """
             \(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")
@@ -80,7 +111,7 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
     }
 
     func urlSession(_: URLSession, task: URLSessionTask, didFinishCollecting _: URLSessionTaskMetrics) {
-        #if DEBUG
+        #if DEBUG && canImport(os)
         logger.debug(
             """
             200 \(task.currentRequest!.httpMethod!) \(task.currentRequest!.url!.absoluteString)
@@ -93,7 +124,7 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
 }
 
 class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
-    #if DEBUG
+    #if DEBUG && canImport(os)
     private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegateWithoutRedirect")
     #endif
 
@@ -104,7 +135,7 @@ class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
         newRequest _: URLRequest,
         completionHandler: @escaping (URLRequest?) -> Swift.Void
     ) {
-        #if DEBUG
+        #if DEBUG && canImport(os)
         logger.debug(
             """
             \(response.statusCode) \(task.currentRequest?.httpMethod ?? "") \(task.currentRequest?.url?.absoluteString ?? "")
@@ -117,7 +148,7 @@ class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
     }
 
     func urlSession(_: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
-        #if DEBUG
+        #if DEBUG && canImport(os)
         if metrics.redirectCount == 0 {
             logger.debug(
                 """

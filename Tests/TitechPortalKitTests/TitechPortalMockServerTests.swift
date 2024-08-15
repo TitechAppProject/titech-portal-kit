@@ -1,3 +1,4 @@
+#if os(macOS) || os(iOS)
 import XCTest
 
 @testable import TitechPortalKit
@@ -99,3 +100,4 @@ final class TitechPortalMockServerTests: XCTestCase {
         )
     }
 }
+#endif
