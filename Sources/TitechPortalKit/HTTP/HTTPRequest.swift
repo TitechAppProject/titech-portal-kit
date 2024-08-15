@@ -1,4 +1,5 @@
 import Foundation
+
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -46,7 +47,7 @@ extension HTTPRequest {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             request.httpShouldHandleCookies = true
-            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent" : userAgent], uniquingKeysWith: { key1, _ in key1}) ?? [:]
+            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent": userAgent], uniquingKeysWith: { key1, _ in key1 }) ?? [:]
             return request
         case .post:
             guard let url = components.url else {
@@ -63,10 +64,9 @@ extension HTTPRequest {
             request.httpMethod = method.rawValue
             request.httpShouldHandleCookies = true
             request.httpBody = (components.query ?? "").data(using: .utf8)
-            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent" : userAgent], uniquingKeysWith: { key1, _ in key1}) ?? [:]
+            request.allHTTPHeaderFields = headerFields?.merging(["User-Agent": userAgent], uniquingKeysWith: { key1, _ in key1 }) ?? [:]
 
             return request
         }
     }
 }
-

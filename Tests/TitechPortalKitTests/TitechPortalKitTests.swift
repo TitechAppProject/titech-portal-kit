@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import TitechPortalKit
 
 final class TitechPortalKitTests: XCTestCase {
@@ -6,17 +7,17 @@ final class TitechPortalKitTests: XCTestCase {
         let portal = TitechPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "password_page", withExtension: "html")!)
-        
+
         XCTAssertTrue(try! portal.validatePasswordPage(html: html))
     }
-    
+
     func testPasswordPageParseHTMLInputs() throws {
         let portal = TitechPortal(urlSession: .shared)
 
         let passwordPageHtml = try! String(contentsOf: Bundle.module.url(forResource: "password_page", withExtension: "html")!)
-        
+
         let passwordPageInputs = try! portal.parseHTMLInput(html: passwordPageHtml)
-        
+
         XCTAssertEqual(
             passwordPageInputs,
             [
@@ -29,7 +30,7 @@ final class TitechPortalKitTests: XCTestCase {
                 HTMLInput(name: "AUTHMETHOD", type: .hidden, value: "UserPassword"),
                 HTMLInput(name: "pageGenTime", type: .hidden, value: "100"),
                 HTMLInput(name: "LOCALE", type: .hidden, value: "ja_JP"),
-                HTMLInput(name: "CSRFFormToken", type: .hidden, value: "CSRFFormTokenValue")
+                HTMLInput(name: "CSRFFormToken", type: .hidden, value: "CSRFFormTokenValue"),
             ]
         )
     }
@@ -38,7 +39,7 @@ final class TitechPortalKitTests: XCTestCase {
         let portal = TitechPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "matrix_code_page", withExtension: "html")!)
-        
+
         XCTAssertFalse(try! portal.validateOtpPage(html: html))
     }
 
@@ -46,7 +47,7 @@ final class TitechPortalKitTests: XCTestCase {
         let portal = TitechPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "otp_select_page", withExtension: "html")!)
-        
+
         XCTAssertTrue(try! portal.validateOtpPage(html: html))
     }
 
@@ -54,15 +55,15 @@ final class TitechPortalKitTests: XCTestCase {
         let portal = TitechPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "totp_page", withExtension: "html")!)
-        
+
         XCTAssertTrue(try! portal.validateOtpPage(html: html))
     }
-    
+
     func testResourceMenuValidation() throws {
         let portal = TitechPortal(urlSession: .shared)
 
         let html = try! String(contentsOf: Bundle.module.url(forResource: "resource_list_page-ja", withExtension: "html")!)
-        
+
         XCTAssertTrue(try! portal.validateResourceListPage(html: html))
     }
 }
