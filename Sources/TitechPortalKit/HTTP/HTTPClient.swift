@@ -17,7 +17,7 @@ struct HTTPClientImpl: HTTPClient {
     private let userAgent: String
 
     init(urlSession: URLSession, userAgent: String) {
-        self.urlSession =  urlSession
+        self.urlSession = urlSession
         self.urlSessionDelegate = HTTPClientDelegate()
         self.urlSessionDelegateWithoutRedirect = HTTPClientDelegateWithoutRedirect()
         self.userAgent = userAgent
@@ -26,16 +26,16 @@ struct HTTPClientImpl: HTTPClient {
     func send(_ request: HTTPRequest) async throws -> String {
         let (data, _) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
-               delegate: urlSessionDelegate
+            delegate: urlSessionDelegate
         )
 
         return String(data: data, encoding: .utf8) ?? ""
     }
-    
+
     func statusCode(_ request: HTTPRequest) async throws -> Int {
         let (_, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
-               delegate: urlSessionDelegateWithoutRedirect
+            delegate: urlSessionDelegateWithoutRedirect
         )
 
         return (response as? HTTPURLResponse)?.statusCode ?? 0
@@ -46,7 +46,7 @@ struct HTTPClientMock: HTTPClient {
     func send(_ request: HTTPRequest) async throws -> String {
         ""
     }
-    
+
     func statusCode(_ request: HTTPRequest) async throws -> Int {
         0
     }

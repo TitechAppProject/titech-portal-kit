@@ -24,7 +24,7 @@ struct Regex {
             var dats: [[String]] = []
             for result in results {
                 var datss = [String]()
-                for j in start ..< result.numberOfRanges {
+                for j in start..<result.numberOfRanges {
                     if result.range(at: j).length == 0 {
                         datss += [""]
                         continue

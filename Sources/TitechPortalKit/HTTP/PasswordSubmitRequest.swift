@@ -1,4 +1,5 @@
 import Foundation
+
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
@@ -6,10 +7,10 @@ import FoundationNetworking
 struct PasswordSubmitRequest: HTTPRequest {
     let url: URL = URL(
         string: BaseURL.origin + "/GetAccess/Login")!
-    
+
     var method: HTTPMethod = .post
-    
-    var headerFields: [String : String]? = [
+
+    var headerFields: [String: String]? = [
         "Referer": BaseURL.origin + "/GetAccess/Login?Template=userpass_key&AUTHMETHOD=UserPassword",
         "Host": BaseURL.host,
         "Origin": BaseURL.origin,
@@ -19,9 +20,9 @@ struct PasswordSubmitRequest: HTTPRequest {
         "Accept-Encoding": "br, gzip, deflate",
         "Accept-Language": "ja-jp",
     ]
-    
-    var body: [String : String]?
-    
+
+    var body: [String: String]?
+
     init(htmlInputs: [HTMLInput]) {
         body = htmlInputs.reduce(into: [String: String]()) {
             $0[$1.name] = $1.value
