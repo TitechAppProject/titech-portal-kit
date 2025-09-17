@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TitechPortalAccount {
+public struct TitechPortalAccount: Sendable {
     let username: String
     let password: String
     let matrixcode: [TitechPortalMatrix: String]
