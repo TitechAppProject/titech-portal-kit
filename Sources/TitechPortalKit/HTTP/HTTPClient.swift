@@ -83,7 +83,7 @@ struct HTTPClientMock: HTTPClient {
     }
 }
 
-class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
+final class HTTPClientDelegate: NSObject, URLSessionTaskDelegate {
     #if DEBUG && canImport(os)
     private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegate")
     #endif
@@ -123,7 +123,7 @@ class HTTPClientDelegate: URLProtocol, URLSessionTaskDelegate {
     }
 }
 
-class HTTPClientDelegateWithoutRedirect: URLProtocol, URLSessionTaskDelegate {
+final class HTTPClientDelegateWithoutRedirect: NSObject, URLSessionTaskDelegate {
     #if DEBUG && canImport(os)
     private let logger = Logger(subsystem: "app.titech.titech-portal-kit", category: "HTTPClientDelegateWithoutRedirect")
     #endif

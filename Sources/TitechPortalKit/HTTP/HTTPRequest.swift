@@ -6,13 +6,13 @@ import FoundationNetworking
 
 enum BaseURL {
     #if TEST
-    static var origin = "https://portal-mock.titech.app"
-    static var host = "portal-mock.titech.app"
+    nonisolated(unsafe) static var origin = "https://portal-mock.titech.app"
+    nonisolated(unsafe) static var host = "portal-mock.titech.app"
 
     static func changeToMockServer() {}
     #else
-    static var origin = "https://portal.nap.gsic.titech.ac.jp"
-    static var host = "portal.nap.gsic.titech.ac.jp"
+    nonisolated(unsafe) static var origin = "https://portal.nap.gsic.titech.ac.jp"
+    nonisolated(unsafe) static var host = "portal.nap.gsic.titech.ac.jp"
 
     static func changeToMockServer() {
         origin = "https://portal-mock.titech.app"
