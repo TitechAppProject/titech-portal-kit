@@ -1,6 +1,6 @@
 import Foundation
 
-public enum TitechPortalMatrix: String, CaseIterable {
+public enum TitechPortalMatrix: String, CaseIterable, Sendable {
     case a1
     case a2
     case a3
