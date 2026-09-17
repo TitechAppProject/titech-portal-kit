@@ -9,8 +9,13 @@ import FoundationNetworking
 #endif
 
 protocol HTTPClient {
-    func send(_ request: HTTPRequest) async throws -> String
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse
     func statusCode(_ request: HTTPRequest) async throws -> Int
+}
+
+struct HTTPResponse {
+    let body: String
+    let url: URL?
 }
 
 struct HTTPClientImpl: HTTPClient {
@@ -30,25 +35,25 @@ struct HTTPClientImpl: HTTPClient {
         self.userAgent = userAgent
     }
 
-    func send(_ request: HTTPRequest) async throws -> String {
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse {
         #if canImport(FoundationNetworking)
-        let data: Data = try await withCheckedThrowingContinuation { continuation in
-            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, _, error in
+        let (data, response): (Data, URLResponse?) = try await withCheckedThrowingContinuation { continuation in
+            urlSession.dataTask(with: request.generate(userAgent: userAgent)) { data, response, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                 } else {
-                    continuation.resume(returning: data ?? Data())
+                    continuation.resume(returning: (data ?? Data(), response))
                 }
             }.resume()
         }
         #else
-        let (data, _) = try await urlSession.data(
+        let (data, response) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegate
         )
         #endif
 
-        return String(data: data, encoding: .utf8) ?? ""
+        return HTTPResponse(body: String(data: data, encoding: .utf8) ?? "", url: response.url)
     }
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
@@ -74,8 +79,8 @@ struct HTTPClientImpl: HTTPClient {
 }
 
 struct HTTPClientMock: HTTPClient {
-    func send(_ request: HTTPRequest) async throws -> String {
-        ""
+    func send(_ request: HTTPRequest) async throws -> HTTPResponse {
+        HTTPResponse(body: "", url: nil)
     }
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
