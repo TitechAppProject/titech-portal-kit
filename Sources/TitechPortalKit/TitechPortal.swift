@@ -14,6 +14,7 @@ public enum TitechPortalLoginError: Error, Equatable {
     case failedCurrentMatrixParse
 
     case alreadyLoggedin
+    case passwordChangeRequired
 }
 
 public struct TitechPortal {
@@ -80,6 +81,10 @@ public struct TitechPortal {
         let matrixcodePageSubmitResponse = try await submitMatrixcode(
             htmlInputs: matrixcodePageInputs, htmlSelects: matrixcodePageSelects, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode, referer: matrixcodePageResponse.url)
         let matrixcodePageSubmitHtml = matrixcodePageSubmitResponse.body
+        /// パスワード変更ページの検出
+        if try validatePasswordChangePage(html: matrixcodePageSubmitHtml) {
+            throw TitechPortalLoginError.passwordChangeRequired
+        }
         /// リソースリストページのバリデーション
         guard try validateResourceListPage(html: matrixcodePageSubmitHtml) else {
             throw TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: matrixcodePageCurrentMatrix, html: matrixcodePageSubmitHtml)
@@ -239,6 +244,14 @@ public struct TitechPortal {
         let bodyHtml = doc.css("title").first?.innerHTML ?? ""
 
         return bodyHtml.contains("リソース メニュー")
+    }
+
+    func validatePasswordChangePage(html: String) throws -> Bool {
+        let doc = try HTML(html: html, encoding: .utf8)
+
+        let title = doc.css("title").first?.innerHTML ?? ""
+
+        return title.contains("Password Change")
     }
 
     func parseHTMLInput(html: String) throws -> [HTMLInput] {
