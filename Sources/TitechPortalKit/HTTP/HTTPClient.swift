@@ -47,13 +47,13 @@ struct HTTPClientImpl: HTTPClient {
             }.resume()
         }
         #else
-        let (data, response) = try await urlSession.data(
+        let (data, response): (Data, URLResponse?) = try await urlSession.data(
             for: request.generate(userAgent: userAgent),
             delegate: urlSessionDelegate
         )
         #endif
 
-        return HTTPResponse(body: String(data: data, encoding: .utf8) ?? "", url: response.url)
+        return HTTPResponse(body: String(data: data, encoding: .utf8) ?? "", url: response?.url)
     }
 
     func statusCode(_ request: HTTPRequest) async throws -> Int {
