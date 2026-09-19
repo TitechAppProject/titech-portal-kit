@@ -12,7 +12,6 @@ struct PasswordSubmitRequest: HTTPRequest {
 
     var headerFields: [String: String]? = [
         "Referer": BaseURL.origin + "/GetAccess/Login?Template=userpass_key&AUTHMETHOD=UserPassword",
-        "Host": BaseURL.host,
         "Origin": BaseURL.origin,
         "Connection": "keep-alive",
         "Content-Type": "application/x-www-form-urlencoded",

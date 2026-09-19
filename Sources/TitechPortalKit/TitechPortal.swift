@@ -28,7 +28,8 @@ public struct TitechPortal {
     /// - Parameter account: ログイン情報
     public func login(account: TitechPortalAccount) async throws {
         /// パスワードページの取得
-        let passwordPageHtml = try await fetchPasswordPage()
+        let passwordPageResponse = try await fetchPasswordPage()
+        let passwordPageHtml = passwordPageResponse.body
         /// パスワードページのバリデーション
         guard try validatePasswordPage(html: passwordPageHtml) else {
             throw TitechPortalLoginError.invalidPasswordPageHtml
@@ -36,14 +37,15 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: account.username, password: account.password)
+        let passwordPageSubmitResponse = try await submitPassword(htmlInputs: passwordPageInputs, username: account.username, password: account.password)
+        let passwordPageSubmitHtml = passwordPageSubmitResponse.body
 
         /// すでにログインセッションがある場合はパスワード入力後にすぐにResourceListページに飛ぶ
         if try validateResourceListPage(html: passwordPageHtml) {
             throw TitechPortalLoginError.alreadyLoggedin
         }
 
-        let matrixcodePageHtml: String
+        let matrixcodePageResponse: HTTPResponse
 
         if try validateOtpPage(html: passwordPageSubmitHtml) {
             /// OTP選択ページのInputsのパース
@@ -59,10 +61,11 @@ public struct TitechPortal {
                 throw TitechPortalLoginError.noMatrixcodeOption
             }
             /// OTP選択Formの送信
-            matrixcodePageHtml = try await submitOtpSelect(htmlInputs: otpSelectPageInputs, htmlSelects: otpSelectPageSelects)
+            matrixcodePageResponse = try await submitOtpSelect(htmlInputs: otpSelectPageInputs, htmlSelects: otpSelectPageSelects, referer: passwordPageSubmitResponse.url)
         } else {
-            matrixcodePageHtml = passwordPageSubmitHtml
+            matrixcodePageResponse = HTTPResponse(body: passwordPageSubmitHtml, url: passwordPageSubmitResponse.url)
         }
+        let matrixcodePageHtml = matrixcodePageResponse.body
         /// マトリクスコードページのバリデーション
         guard try validateMatrixcodePage(html: matrixcodePageHtml) else {
             throw TitechPortalLoginError.invalidMatrixcodePageHtml
@@ -74,8 +77,9 @@ public struct TitechPortal {
         ///マトリクスコード入力ページのSelectのパース
         let matrixcodePageSelects = try parseHTMLSelect(html: matrixcodePageHtml)
         /// マトリクスコードFormの送信
-        let matrixcodePageSubmitHtml = try await submitMatrixcode(
-            htmlInputs: matrixcodePageInputs, htmlSelects: matrixcodePageSelects, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode)
+        let matrixcodePageSubmitResponse = try await submitMatrixcode(
+            htmlInputs: matrixcodePageInputs, htmlSelects: matrixcodePageSelects, parsedMatrix: matrixcodePageCurrentMatrix, matrixcodes: account.matrixcode, referer: matrixcodePageResponse.url)
+        let matrixcodePageSubmitHtml = matrixcodePageSubmitResponse.body
         /// リソースリストページのバリデーション
         guard try validateResourceListPage(html: matrixcodePageSubmitHtml) else {
             throw TitechPortalLoginError.invalidResourceListPageHtml(currentMatrices: matrixcodePageCurrentMatrix, html: matrixcodePageSubmitHtml)
@@ -87,7 +91,8 @@ public struct TitechPortal {
     /// - Returns: 正しくログインできればtrue, エラーであればfalseを返す
     public func checkUsernamePassword(username: String, password: String) async throws -> Bool {
         /// パスワードページの取得
-        let passwordPageHtml = try await fetchPasswordPage()
+        let passwordPageResponse = try await fetchPasswordPage()
+        let passwordPageHtml = passwordPageResponse.body
         /// パスワードページのバリデーション
         guard try validatePasswordPage(html: passwordPageHtml) else {
             throw TitechPortalLoginError.invalidPasswordPageHtml
@@ -95,7 +100,8 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
+        let passwordPageSubmitResponse = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
+        let passwordPageSubmitHtml = passwordPageSubmitResponse.body
 
         return try validateOtpPage(html: passwordPageSubmitHtml) || validateMatrixcodePage(html: passwordPageSubmitHtml)
     }
@@ -113,7 +119,8 @@ public struct TitechPortal {
     /// - Returns: 現在のマトリクス
     public func fetchCurrentMatrix(username: String, password: String) async throws -> [TitechPortalMatrix] {
         /// パスワードページの取得
-        let passwordPageHtml = try await fetchPasswordPage()
+        let passwordPageResponse = try await fetchPasswordPage()
+        let passwordPageHtml = passwordPageResponse.body
         /// パスワードページのバリデーション
         guard try validatePasswordPage(html: passwordPageHtml) else {
             throw TitechPortalLoginError.invalidPasswordPageHtml
@@ -121,14 +128,15 @@ public struct TitechPortal {
         /// パスワードページのInputsのパース
         let passwordPageInputs = try parseHTMLInput(html: passwordPageHtml)
         /// パスワードFormの送信
-        let passwordPageSubmitHtml = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
+        let passwordPageSubmitResponse = try await submitPassword(htmlInputs: passwordPageInputs, username: username, password: password)
+        let passwordPageSubmitHtml = passwordPageSubmitResponse.body
 
         /// すでにログインセッションがある場合はパスワード入力後にすぐにResourceListページに飛ぶ
         if try validateResourceListPage(html: passwordPageHtml) {
             throw TitechPortalLoginError.alreadyLoggedin
         }
 
-        let matrixcodePageHtml: String
+        let matrixcodePageResponse: HTTPResponse
 
         if try validateOtpPage(html: passwordPageSubmitHtml) {
             /// OTP選択ページのInputsのパース
@@ -144,10 +152,11 @@ public struct TitechPortal {
                 throw TitechPortalLoginError.noMatrixcodeOption
             }
             /// OTP選択Formの送信
-            matrixcodePageHtml = try await submitOtpSelect(htmlInputs: otpSelectPageInputs, htmlSelects: otpSelectPageSelects)
+            matrixcodePageResponse = try await submitOtpSelect(htmlInputs: otpSelectPageInputs, htmlSelects: otpSelectPageSelects, referer: passwordPageSubmitResponse.url)
         } else {
-            matrixcodePageHtml = passwordPageSubmitHtml
+            matrixcodePageResponse = HTTPResponse(body: passwordPageSubmitHtml, url: passwordPageSubmitResponse.url)
         }
+        let matrixcodePageHtml = matrixcodePageResponse.body
         /// マトリクスコードページのバリデーション
         guard try validateMatrixcodePage(html: matrixcodePageHtml) else {
             throw TitechPortalLoginError.invalidMatrixcodePageHtml
@@ -156,7 +165,7 @@ public struct TitechPortal {
         return try parseCurrentMatrixes(html: matrixcodePageHtml)
     }
 
-    func fetchPasswordPage() async throws -> String {
+    func fetchPasswordPage() async throws -> HTTPResponse {
         let request = PasswordPageRequest()
 
         return try await httpClient.send(request)
@@ -170,7 +179,7 @@ public struct TitechPortal {
         return bodyHtml.contains("Please input your account &amp; password.")
     }
 
-    func submitPassword(htmlInputs: [HTMLInput], username: String, password: String) async throws -> String {
+    func submitPassword(htmlInputs: [HTMLInput], username: String, password: String) async throws -> HTTPResponse {
         let injectedHtmlInputs = inject(htmlInputs, username: username, password: password)
 
         let request = PasswordSubmitRequest(htmlInputs: injectedHtmlInputs)
@@ -186,7 +195,7 @@ public struct TitechPortal {
         return bodyHtml.contains("Select Label for OTP") || bodyHtml.contains("Enter Token Dynamic Password")
     }
 
-    func submitOtpSelect(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect]) async throws -> String {
+    func submitOtpSelect(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect], referer: URL?) async throws -> HTTPResponse {
         let selectedHtmlSelects: [HTMLSelect] = htmlSelects.map {
             var newHtmlSelect = $0
 
@@ -195,7 +204,7 @@ public struct TitechPortal {
             return newHtmlSelect
         }
 
-        let request = OtpSelectSubmitRequest(htmlInputs: htmlInputs, htmlSelects: selectedHtmlSelects)
+        let request = OtpSelectSubmitRequest(htmlInputs: htmlInputs, htmlSelects: selectedHtmlSelects, referer: referer)
 
         return try await httpClient.send(request)
     }
@@ -208,7 +217,7 @@ public struct TitechPortal {
         return bodyHtml.contains("Matrix Authentication")
     }
 
-    func submitMatrixcode(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String]) async throws -> String {
+    func submitMatrixcode(htmlInputs: [HTMLInput], htmlSelects: [HTMLSelect], parsedMatrix: [TitechPortalMatrix], matrixcodes: [TitechPortalMatrix: String], referer: URL?) async throws -> HTTPResponse {
         let injectedHtmlInputs = inject(htmlInputs, parsedMatrix: parsedMatrix, matrixcodes: matrixcodes)
 
         let injectedSelects: [HTMLSelect] = htmlSelects.map {
@@ -219,7 +228,7 @@ public struct TitechPortal {
             }
         }
 
-        let request = MatrixcodeSubmitRequest(htmlInputs: injectedHtmlInputs, htmlSelects: injectedSelects)
+        let request = MatrixcodeSubmitRequest(htmlInputs: injectedHtmlInputs, htmlSelects: injectedSelects, referer: referer)
 
         return try await httpClient.send(request)
     }
