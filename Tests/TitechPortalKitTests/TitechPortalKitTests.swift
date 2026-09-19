@@ -66,4 +66,20 @@ final class TitechPortalKitTests: XCTestCase {
 
         XCTAssertTrue(try! portal.validateResourceListPage(html: html))
     }
+
+    func testPasswordChangePageValidation() throws {
+        let portal = TitechPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "password_change_page", withExtension: "html")!)
+
+        XCTAssertTrue(try! portal.validatePasswordChangePage(html: html))
+    }
+
+    func testPasswordChangePageValidationForResourceListPage() throws {
+        let portal = TitechPortal(urlSession: .shared)
+
+        let html = try! String(contentsOf: Bundle.module.url(forResource: "resource_list_page-ja", withExtension: "html")!)
+
+        XCTAssertFalse(try! portal.validatePasswordChangePage(html: html))
+    }
 }
