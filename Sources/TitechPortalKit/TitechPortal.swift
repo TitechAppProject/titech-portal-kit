@@ -14,7 +14,8 @@ public enum TitechPortalLoginError: Error, Equatable {
     case failedCurrentMatrixParse
 
     case alreadyLoggedin
-    case passwordChangeRequired
+    /// パスワード変更が必要。urlはリダイレクト後のパスワード変更ページのURL
+    case passwordChangeRequired(url: URL?)
 }
 
 public struct TitechPortal {
@@ -83,7 +84,7 @@ public struct TitechPortal {
         let matrixcodePageSubmitHtml = matrixcodePageSubmitResponse.body
         /// パスワード変更ページの検出
         if try validatePasswordChangePage(html: matrixcodePageSubmitHtml) {
-            throw TitechPortalLoginError.passwordChangeRequired
+            throw TitechPortalLoginError.passwordChangeRequired(url: matrixcodePageSubmitResponse.url)
         }
         /// リソースリストページのバリデーション
         guard try validateResourceListPage(html: matrixcodePageSubmitHtml) else {

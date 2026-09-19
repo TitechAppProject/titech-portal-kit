@@ -4,6 +4,18 @@ import XCTest
 @testable import TitechPortalKit
 
 final class TitechPortalMockServerTests: XCTestCase {
+    /// HTTPResponse.urlが実際に埋まることの確認
+    /// ここがnilのままだとpasswordChangeRequiredのURLも常にnilになる
+    func testMockServerResponseCarriesURL() async throws {
+        TitechPortal.changeToMockServer()
+        let httpClient = HTTPClientImpl(urlSession: .shared, userAgent: TitechPortal.defaultUserAgent)
+
+        let response = try await httpClient.send(PasswordPageRequest())
+
+        XCTAssertEqual(response.url?.absoluteString.hasPrefix(BaseURL.origin), true)
+        XCTAssertFalse(response.body.isEmpty)
+    }
+
     func testMockServerLogin() async throws {
         TitechPortal.changeToMockServer()
         let portal = TitechPortal(urlSession: .shared)
